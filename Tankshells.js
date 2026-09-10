@@ -37,19 +37,13 @@ var init = () => {
 
     // C1
     {
-        let getDesc = (level) => "c_1=" + getC1(level).toString(0);
-        c1 = theory.createUpgrade(0, currency, new FirstFreeCost(new ExponentialCost(2, Math.log2(1.3))));
-        c1.getDescription = (_) => Utils.getMath(getDesc(c1.level));
-        c1.getInfo = (amount) => Utils.getMathTo(getDesc(c1.level), getDesc(c1.level + amount));
+        let getDesc = (level) => "m=" + getm(level).toString(0) + "mg";
+        m = theory.createUpgrade(0, currency, new FirstFreeCost(new ExponentialCost(2, Math.log2(1.3))));
+        m.getDescription = (_) => Utils.getMath(getDesc(m.level));
+        m.getInfo = (amount) => Utils.getMathTo(getDesc(m.level), getDesc(m.level + amount));
     }
 
-    // C2
-    {
-        let getDesc = (level) => "c_2=2^{" + level + "}";
-        c2 = theory.createUpgrade(1, currency, new ExponentialCost(2, Math.log2(5)));
-        c2.getDescription = (_) => Utils.getMath(getDesc(c2.level));
-        c2.getInfo = (amount) => Utils.getMathTo(getDesc(c2.level), getDesc(c2.level + amount));
-    }
+
 
     // P
     {
@@ -61,7 +55,7 @@ var init = () => {
 
     // L
     {
-        let getDesc = (level) => "L=" + getL(level).toString(3) + "cm";
+        let getDesc = (level) => "L=" + getL(level).toString(3) + "mm";
         L = theory.createUpgrade(3, currency, new ExponentialCost(10, Math.log2(1.3)));
         L.getDescription = (_) => Utils.getMath(getDesc(L.level));
         L.getInfo = (amount) => Utils.getMathTo(getDesc(L.level), getDesc(L.level + amount));
@@ -123,41 +117,39 @@ var updateAvailability = () => {
 var tick = (elapsedTime, multiplier) => {
     let dt = BigNumber.from(elapsedTime * multiplier);
     let bonus = theory.publicationMultiplier;
-    currency.value += dt * bonus *  c1.level * (c2.level + 1) *
+    currency.value += 10 * dt * bonus *  getm(m.level) *
                                     Math.sqrt(
                                     (Math.PI *
                                     getP(P.level) *
                                     getL(L.level+1) *
                                     Math.pow((d.level+1)*15, 2)
                                     )
-                                    /(2 * getm)
+                                    /(2 * getm(m.level) + 1)
                                     );
 }
 
-var getPrimaryEquation = () => "L" + "=\\max v";
+var getPrimaryEquation = () => "\\dot{\\rho}" + "=vm";
                                
 
 var getSecondaryEquation = () => {
 
     theory.secondaryEquationScale = 1.5;
     theory.secondaryEquationHeight = 100;
-    let result ="v = \\sqrt\\frac{P \\pi d^2 L}{2m}";
+    let result ="v = \\sqrt\\frac{P \\pi d^2 \\L}{2m}";
     return result;
 
 };
 var getTertiaryEquation = () => theory.latexSymbol + "=" + "\\max\\rho" + "^{0.1}";
-var getPublicationMultiplier = (rho) => currency.value.pow(0.164) / BigNumber.THREE;
-var getPublicationMultiplierFormula = (rho) => "\\frac{{" + rho + "}^{0.164}}{3}";
+var getPublicationMultiplier = (tau) => tau.pow(3)/3;
+var getPublicationMultiplierFormula = (tau) => "\\frac{{" + tau + "}^{3}}{3}";
 var getTau = () => currency.value.pow(0.1);
 var get2DGraphValue = () => currency.value.sign * (BigNumber.ONE + currency.value.abs()).log10().toNumber();
 
 var getP = (level) => Utils.getStepwisePowerSum(level, 2, 10, 0);
 var getL = (level) => Utils.getStepwisePowerSum(level, 2, 10, 1);
-var getC1 = (level) => Utils.getStepwisePowerSum(level, 2, 10, 0);
-var getC2 = (level) => BigNumber.TWO.pow(level);
-var getC1Exponent = (level) => BigNumber.from(1 + 0.05 * level);
-var getC2Exponent = (level) => BigNumber.from(1 + 0.05 * level);
-var getm = 1;
+
+
+var getm = (level) => Utils.getStepwisePowerSum(level, 2, 10, 0);
 var getCurrencyFromTau = (tau) => [tau.max(BigNumber.ONE).pow(10), currency.symbol];
 
 init();

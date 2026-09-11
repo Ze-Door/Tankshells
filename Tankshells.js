@@ -136,17 +136,17 @@ var tick = (elapsedTime, multiplier) => {
                                     (Math.PI *
                                     getP(P.level) *
                                     getL(L.level+1) *
-                                    Math.pow((d.level+1))*15, 2)
+                                    Math.pow((d.level+1)*15, 2)
                                     
-                                    /(2 * getm(m.level) + 1))
+                                    /(2 * getm(m.level) + 1)))
                                     ;
     }
     if (FunctionLVL.level == 1) {
-    currency.value += dt * bonus * (getm(m.level) * (
+    currency.value += dt * bonus * (getm(m.level) * 
                                         (Math.PI *
                                         getP(P.level) *
                                         getL(L.level+1) *
-                                        Math.pow((d.level+1))*15, 2)
+                                        Math.pow((d.level+1)*15, 2)
                                         )
                                         /(2 * getm(m.level) + 1)
                                         )

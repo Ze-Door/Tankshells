@@ -137,8 +137,8 @@ var tick = (elapsedTime, multiplier) => {
                                     getP(P.level) *
                                     getL(L.level+1) *
                                     Math.pow((d.level+1))*15, 2)
-                                    )
-                                    /(2 * getm(m.level) + 1)
+                                    
+                                    /(2 * getm(m.level) + 1))
                                     ;
     }
     if (FunctionLVL.level == 1) {
